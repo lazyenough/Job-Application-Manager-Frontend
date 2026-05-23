@@ -92,6 +92,14 @@ function renderSavedJobs(jobs) {
 
 // Fetch Initial Pipeline Data (Loads top 5 jobs at startup)
 async function loadInitialJobs() {
+    // 1. Instantly inject the loading spinner into the container
+    jobsContainer.innerHTML = `
+        <div class="loading-state">
+            <div class="spinner"></div>
+            <p>Waking up backend server... This may take up to a minute if it's sleeping.</p>
+        </div>
+    `;
+
     try {
         // Calls the backend pipeline
         const response = await fetch(`${API_BASE_URL}/jobs`);
@@ -99,10 +107,21 @@ async function loadInitialJobs() {
             let data = await response.json();
             // Slice the array payload down to a max of top 5 elements
             const topFiveJobs = data.slice(0, 5);
+            
+            // 2. This completely overwrites the spinner with your job cards
             renderSavedJobs(topFiveJobs);
+        } else {
+            // Handle HTTP errors gracefully
+            jobsContainer.innerHTML = '<p class="job-meta-text" style="padding: 2rem; text-align: center; color: #991b1b;">Could not fetch jobs from the database.</p>';
         }
     } catch (error) {
         console.error("Failed to load initial job dashboard cards:", error);
+        // 3. Inform the user visually if the network/server connection timed out entirely
+        jobsContainer.innerHTML = `
+            <p class="job-meta-text" style="padding: 2rem; text-align: center; color: #991b1b;">
+                Error connecting to server. Please check your connection or refresh the page.
+            </p>
+        `;
     }
 }
 
