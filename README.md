@@ -1,0 +1,1 @@
+Link to the website: https://job-application-manager-frontend-nvu1.onrender.com
