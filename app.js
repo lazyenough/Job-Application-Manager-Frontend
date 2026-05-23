@@ -1,3 +1,6 @@
+// const API_BASE_URL = "http://127.0.0.1:8000";
+const API_BASE_URL = "https://job-application-manager-xfxz.onrender.com";
+
 // Dom Element Selectors (Only including active elements present in index.html)
 const ingestBtn = document.getElementById("ingestBtn");
 const jobUrlInput = document.getElementById("jobUrl"); // Matches index.html input id
@@ -91,7 +94,7 @@ function renderSavedJobs(jobs) {
 async function loadInitialJobs() {
     try {
         // Calls the backend pipeline
-        const response = await fetch("/jobs");
+        const response = await fetch(`${API_BASE_URL}/jobs`);
         if (response.ok) {
             let data = await response.json();
             // Slice the array payload down to a max of top 5 elements
@@ -119,7 +122,7 @@ ingestBtn.addEventListener("click", async () => {
 
     try {
         // Hitting your preview endpoint instead of saving directly
-        const response = await fetch("/jobs/ingest/preview", {
+        const response = await fetch(`${API_BASE_URL}/jobs/ingest/preview`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ job_url: jobUrl })
@@ -198,7 +201,7 @@ saveModalBtn.addEventListener("click", async () => {
 
     try {
         // 4. Send directly without the { job_data: ... } wrapper
-        const response = await fetch("/jobs/ingest", {
+        const response = await fetch(`${API_BASE_URL}/jobs/ingest`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(editedJobData) 
@@ -228,7 +231,7 @@ async function updateJobStatus(jobId) {
     resetMessages();
 
     try {
-        const response = await fetch(`/jobs/${jobId}`, {
+        const response = await fetch(`${API_BASE_URL}/jobs/${jobId}`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ status: newStatus })
@@ -254,7 +257,7 @@ async function deleteJob(jobId) {
     resetMessages();
 
     try {
-        const response = await fetch(`/jobs/${jobId}`, { method: "DELETE" });
+        const response = await fetch(`${API_BASE_URL}/jobs/${jobId}`, { method: "DELETE" });
         if (response.ok) {
             successBox.textContent = "Job removed successfully.";
             successBox.style.display = "block";
